@@ -44,7 +44,7 @@ export function useCVIRealtime(brandId: string | null) {
     if (!brandId) return
     loadInitial()
 
-    // ── Pure Supabase Realtime WebSocket ─────────────────────
+    // Pure Supabase Realtime WebSocket.
     // No polling. No setInterval. No prefixed timers.
     // Supabase pushes INSERT events via WS the moment backend writes.
     const channel = supabase
@@ -73,7 +73,7 @@ export function useCVIRealtime(brandId: string | null) {
         setConnected(status === 'SUBSCRIBED')
       })
 
-    // Cleanup — unsubscribe WS channel on unmount
+    // Cleanup: unsubscribe WS channel on unmount.
     return () => {
       supabase.removeChannel(channel)
     }

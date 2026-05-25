@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'PulseSphere — Crisis Intelligence',
+  title: 'PulseSphere - Crisis Intelligence',
   description: 'Real-time brand crisis monitoring'
 }
 

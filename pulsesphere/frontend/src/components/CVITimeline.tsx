@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, Dot } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
 import type { CVISnapshot } from '@/hooks/useCVIRealtime'
 
 interface Props { history: CVISnapshot[] }
@@ -10,9 +10,14 @@ const ZONE_LINES = [
   { y: 40, color: '#FFB800',  label: 'WATCH' },
 ]
 
-function AnomalyDot(props: any) {
-  const { cx, cy, payload } = props
-  if (!payload.is_anomaly) return null
+interface AnomalyDotProps {
+  cx?: number
+  cy?: number
+  payload?: CVISnapshot
+}
+
+function AnomalyDot({ cx, cy, payload }: AnomalyDotProps) {
+  if (!payload?.is_anomaly || cx === undefined || cy === undefined) return null
   return <circle cx={cx} cy={cy} r={5} fill="#FFB800" stroke="#000" strokeWidth={1} />
 }
 
@@ -26,8 +31,8 @@ export default function CVITimeline({ history }: Props) {
   return (
     <div className="w-full bg-[#0D0D1A] border border-[#1A1A3E] rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[#888] text-xs font-mono tracking-widest">CVI TIMELINE · LAST 30 MIN</span>
-        <span className="text-[#555] text-xs">⚡ anomaly markers</span>
+        <span className="text-[#888] text-xs font-mono tracking-widest">CVI TIMELINE - LAST 30 MIN</span>
+        <span className="text-[#555] text-xs">anomaly markers</span>
       </div>
       <ResponsiveContainer width="100%" height={180}>
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 4, left: -20 }}>

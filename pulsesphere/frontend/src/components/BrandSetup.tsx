@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { createBrand } from '@/lib/api'
+import { createBrand, getErrorMessage } from '@/lib/api'
 
 interface Props { onBrandCreated: (id: string, name: string) => void }
 
@@ -17,8 +17,8 @@ export default function BrandSetup({ onBrandCreated }: Props) {
       const kws    = keywords.split(',').map(k => k.trim()).filter(Boolean)
       const result = await createBrand(name.trim(), kws.length ? kws : [name.trim()])
       onBrandCreated(result.brand_id, result.name)
-    } catch (e: any) {
-      setError(e.message)
+    } catch (e: unknown) {
+      setError(getErrorMessage(e))
     } finally {
       setLoading(false)
     }

@@ -11,6 +11,14 @@ interface BrandCVI {
   recorded_at?: string
 }
 
+interface CVIHistorySnapshot {
+  score: number
+  recorded_at: string
+}
+
+type HistoryByBrand = Record<string, CVIHistorySnapshot[]>
+type ChartPoint = Record<string, number | string>
+
 interface Props {
   brandIds: string[]
   baseUrl?: string
@@ -28,31 +36,32 @@ const LINE_COLORS = ['#00E5FF', '#FF3B3B', '#FFB800']
 
 export default function CompetitorPanel({ brandIds, baseUrl = 'http://localhost:8000' }: Props) {
   const [panel,   setPanel]   = useState<BrandCVI[]>([])
-  const [history, setHistory] = useState<Record<string, any[]>>({})
+  const [history, setHistory] = useState<HistoryByBrand>({})
   const [wsLive,  setWsLive]  = useState(false)
+  const brandIdList = brandIds.join(',')
 
   // WebSocket for live competitor updates
   useEffect(() => {
     if (!brandIds.length) return
-    const wsUrl = `${baseUrl.replace('http', 'ws')}/competitor/ws/competitor?brand_ids=${brandIds.join(',')}`
+    const wsUrl = `${baseUrl.replace('http', 'ws')}/competitor/ws/competitor?brand_ids=${brandIdList}`
     const ws = new WebSocket(wsUrl)
     ws.onopen  = () => setWsLive(true)
     ws.onclose = () => setWsLive(false)
     ws.onmessage = (e) => {
-      const data = JSON.parse(e.data)
+      const data = JSON.parse(e.data) as { panel?: BrandCVI[] }
       if (data.panel) setPanel(data.panel)
     }
     return () => ws.close()
-  }, [brandIds.join(',')])
+  }, [baseUrl, brandIdList, brandIds.length])
 
   // Fetch history for multi-line chart
   useEffect(() => {
     if (!brandIds.length) return
-    fetch(`${baseUrl}/competitor/history?brand_ids=${brandIds.join(',')}&limit=30`)
+    fetch(`${baseUrl}/competitor/history?brand_ids=${brandIdList}&limit=30`)
       .then(r => r.json())
-      .then(setHistory)
+      .then((data: HistoryByBrand) => setHistory(data))
       .catch(() => {})
-  }, [brandIds.join(',')])
+  }, [baseUrl, brandIdList, brandIds.length])
 
   // Merge history into recharts format [{time, Brand1, Brand2, Brand3}]
   const chartData = (() => {
@@ -60,7 +69,7 @@ export default function CompetitorPanel({ brandIds, baseUrl = 'http://localhost:
     if (!names.length) return []
     const maxLen = Math.max(...names.map(n => history[n].length))
     return Array.from({ length: maxLen }, (_, i) => {
-      const pt: Record<string, any> = { time: '' }
+      const pt: ChartPoint = { time: '' }
       names.forEach(name => {
         const snap = history[name][i]
         if (snap) {
@@ -86,7 +95,7 @@ export default function CompetitorPanel({ brandIds, baseUrl = 'http://localhost:
 
       {/* 3 mini CVI cards */}
       <div className="grid grid-cols-3 gap-3 mb-5">
-        {panel.map((b, idx) => {
+        {panel.map(b => {
           const color = LEVEL_COLOR[b.level] || '#888'
           return (
             <div key={b.brand_id} className="bg-[#0D0D1A] rounded-xl p-3 border border-[#1A1A3E] text-center">
@@ -95,7 +104,7 @@ export default function CompetitorPanel({ brandIds, baseUrl = 'http://localhost:
                 {Math.round(b.score)}
               </div>
               <div className="text-[10px] font-mono" style={{ color }}>{b.level}</div>
-              {b.is_anomaly && <div className="text-[9px] text-yellow-400 mt-1">⚡ anomaly</div>}
+              {b.is_anomaly && <div className="text-[9px] text-yellow-400 mt-1">anomaly</div>}
             </div>
           )
         })}

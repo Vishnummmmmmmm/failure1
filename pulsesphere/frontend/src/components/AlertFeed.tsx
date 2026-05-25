@@ -11,7 +11,7 @@ const SEV_STYLE: Record<string, string> = {
 
 export default function AlertFeed({ alerts }: Props) {
   if (!alerts.length) return (
-    <div className="text-center text-[#444] text-sm py-8 font-mono">NO ACTIVE ALERTS · CVI STABLE</div>
+    <div className="text-center text-[#444] text-sm py-8 font-mono">NO ACTIVE ALERTS - CVI STABLE</div>
   )
 
   return (

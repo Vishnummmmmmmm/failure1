@@ -57,7 +57,7 @@ export default function OrgTopBar({ branding, orgId, email, onSignOut, baseUrl =
             {displayName}
           </span>
         )}
-        <span className="text-[#333] text-xs font-mono">·</span>
+        <span className="text-[#333] text-xs font-mono">-</span>
         <span className="text-[10px] font-mono px-2 py-0.5 rounded border" style={{ borderColor: accent + '44', color: accent }}>
           {branding?.plan?.toUpperCase() || 'DEMO'}
         </span>

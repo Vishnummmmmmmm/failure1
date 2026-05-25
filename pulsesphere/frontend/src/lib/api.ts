@@ -1,6 +1,35 @@
 const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
-export async function triggerCVI(brandId: string) {
+export interface CVITriggerResult {
+  sources_emotion?: Record<string, number>
+}
+
+export interface BrandResponse {
+  brand_id: string
+  name: string
+}
+
+export interface PlaybookAction {
+  step: number | string
+  urgency: string
+  owner: string
+  action: string
+}
+
+export interface PlaybookResponse {
+  playbook_id: string
+  brand_name: string
+  crisis_summary: string
+  actions?: PlaybookAction[]
+  press_statement: string
+  what_not_to_do?: string
+}
+
+export function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : 'Something went wrong'
+}
+
+export async function triggerCVI(brandId: string): Promise<CVITriggerResult> {
   const r = await fetch(`${BASE}/cvi/?brand_id=${brandId}`)
   if (!r.ok) throw new Error(await r.text())
   return r.json()
@@ -16,7 +45,11 @@ export async function fetchCVIHistory(brandId: string) {
   return r.json()
 }
 
-export async function generatePlaybook(brandId: string, cviScore: number, alertId?: string) {
+export async function generatePlaybook(
+  brandId: string,
+  cviScore: number,
+  alertId?: string
+): Promise<PlaybookResponse> {
   const r = await fetch(`${BASE}/playbook/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -35,7 +68,7 @@ export async function ratePlaybook(playbookId: string, rating: 0 | 1) {
   return r.json()
 }
 
-export async function createBrand(name: string, keywords: string[]) {
+export async function createBrand(name: string, keywords: string[]): Promise<BrandResponse> {
   const r = await fetch(`${BASE}/brands/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

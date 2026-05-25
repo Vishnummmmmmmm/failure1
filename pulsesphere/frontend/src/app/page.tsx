@@ -21,14 +21,14 @@ export default function Dashboard() {
   const [scanning,     setScanning]     = useState(false)
   const [lastEmotions, setLastEmotions] = useState<Record<string,number>>({})
 
-  const { current, history, alerts, connected, refresh } = useCVIRealtime(brandId)
+  const { current, history, alerts, connected } = useCVIRealtime(brandId)
 
-  // Auth gate — redirect to login if not signed in
+  // Auth gate: redirect to login if not signed in.
   useEffect(() => {
     if (!authLoading && !userId) {
       router.replace('/login')
     }
-  }, [authLoading, userId])
+  }, [authLoading, router, userId])
 
   function handleBrandCreated(id: string, name: string) {
     setBrandId(id)
@@ -78,7 +78,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-400' : 'bg-red-500'}`} />
           <span className="text-[10px] font-mono text-[#555]">{connected ? 'LIVE' : 'CONNECTING'}</span>
-          <span className="text-[#333] font-mono mx-2">·</span>
+          <span className="text-[#333] font-mono mx-2">-</span>
           <span className="text-[#555] text-xs font-mono">{brandName.toUpperCase()}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function Dashboard() {
             }`}
             style={{ borderColor: scanning ? undefined : accent, color: scanning ? undefined : accent }}
           >
-            {scanning ? 'SCANNING...' : '▶ SCAN NOW'}
+            {scanning ? 'SCANNING...' : 'SCAN NOW'}
           </button>
         </div>
       </div>

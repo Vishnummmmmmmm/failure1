@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
+import { getErrorMessage } from '@/lib/api'
 import OrgTopBar         from '@/components/OrgBranding'
 import AccentColorPicker from '@/components/AccentColorPicker'
 
@@ -22,8 +23,8 @@ export default function SettingsPage() {
       const r = await fetch(`${BASE}/orgs/${orgId}/invite?email=${encodeURIComponent(inviteEmail)}`, { method: 'POST' })
       if (!r.ok) throw new Error((await r.json()).detail)
       setInviteSent(true)
-    } catch (e: any) {
-      setInviteErr(e.message)
+    } catch (e: unknown) {
+      setInviteErr(getErrorMessage(e))
     } finally {
       setInviting(false)
     }
@@ -37,7 +38,7 @@ export default function SettingsPage() {
       <div className="max-w-2xl mx-auto p-6 space-y-6">
 
         <div className="flex items-center gap-3 mb-2">
-          <button onClick={() => router.push('/')} className="text-[#555] text-xs font-mono hover:text-[#888]">← DASHBOARD</button>
+          <button onClick={() => router.push('/')} className="text-[#555] text-xs font-mono hover:text-[#888]">BACK TO DASHBOARD</button>
           <span className="text-[#888] text-xs font-mono">ORG SETTINGS</span>
         </div>
 
@@ -53,7 +54,7 @@ export default function SettingsPage() {
         <div className="bg-[#0A0A1A] border border-[#1A1A3E] rounded-xl p-5">
           <div className="text-[#888] text-xs font-mono tracking-widest mb-4">INVITE TEAM MEMBER</div>
           {inviteSent ? (
-            <div className="text-green-400 text-sm font-mono">✓ Invite sent to {inviteEmail}</div>
+            <div className="text-green-400 text-sm font-mono">Invite sent to {inviteEmail}</div>
           ) : (
             <div className="flex gap-2">
               <input

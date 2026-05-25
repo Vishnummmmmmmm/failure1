@@ -1,11 +1,9 @@
 'use client'
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
   const { signIn }   = useAuth()
-  const router       = useRouter()
   const [email,    setEmail]    = useState('')
   const [sent,     setSent]     = useState(false)
   const [loading,  setLoading]  = useState(false)
@@ -30,11 +28,10 @@ export default function LoginPage() {
 
         {sent ? (
           <div className="bg-[#0A0A1A] border border-[#1A1A3E] rounded-2xl p-8 text-center">
-            <div className="text-4xl mb-4">📬</div>
             <div className="text-white font-medium mb-2">Check your email</div>
             <div className="text-[#666] text-sm">
               Magic link sent to <span className="text-[#00E5FF]">{email}</span>.
-              Click it to sign in — no password needed.
+              Click it to sign in - no password needed.
             </div>
             <button
               onClick={() => setSent(false)}

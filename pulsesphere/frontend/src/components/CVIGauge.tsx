@@ -67,7 +67,7 @@ export default function CVIGauge({ score, level, isAnomaly, minutesEarly }: Prop
           d={scoreToArc(100)}
           fill="none" stroke="#1A1A2E" strokeWidth="14" strokeLinecap="round"
         />
-        {/* Active arc — animated */}
+        {/* Active arc, animated */}
         <path
           ref={pathRef}
           d={scoreToArc(score)}
@@ -98,7 +98,7 @@ export default function CVIGauge({ score, level, isAnomaly, minutesEarly }: Prop
       {/* Pre-echo badge */}
       {isAnomaly && (
         <div className="absolute top-2 right-2 flex items-center gap-1 bg-yellow-900/60 border border-yellow-500 rounded px-2 py-0.5">
-          <span className="text-yellow-400 text-xs">⚡ Anomaly</span>
+          <span className="text-yellow-400 text-xs">Anomaly</span>
           {minutesEarly ? <span className="text-yellow-300 text-xs font-mono">{minutesEarly}m early</span> : null}
         </div>
       )}

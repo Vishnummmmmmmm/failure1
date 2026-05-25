@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
 export interface OrgBranding {
@@ -27,7 +27,7 @@ export function useAuth(): AuthState {
   const [branding, setBranding] = useState<OrgBranding | null>(null)
   const [loading,  setLoading]  = useState(true)
 
-  async function loadOrgForUser(uid: string) {
+  const loadOrgForUser = useCallback(async (uid: string) => {
     // Find which org this user belongs to
     const { data: membership } = await supabase
       .from('org_members')
@@ -51,7 +51,7 @@ export function useAuth(): AuthState {
       // Inject accent colour as CSS variable globally
       document.documentElement.style.setProperty('--ps-accent', org.accent_color || '#00E5FF')
     }
-  }
+  }, [])
 
   useEffect(() => {
     // Check existing session
@@ -90,7 +90,7 @@ export function useAuth(): AuthState {
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [loadOrgForUser])
 
   async function signIn(email: string) {
     const { error } = await supabase.auth.signInWithOtp({
