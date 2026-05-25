@@ -78,7 +78,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-400' : 'bg-red-500'}`} />
           <span className="text-[10px] font-mono text-[#555]">{connected ? 'LIVE' : 'CONNECTING'}</span>
-          <span className="text-[#333] font-mono mx-2\">·</span>
+          <span className="text-[#333] font-mono mx-2">·</span>
           <span className="text-[#555] text-xs font-mono">{brandName.toUpperCase()}</span>
         </div>
         <div className="flex items-center gap-2">
