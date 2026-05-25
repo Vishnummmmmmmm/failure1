@@ -1,0 +1,22 @@
+# Environments
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+jspm_packages/
+web_modules/
+venv/
+.venv/
+env/
+
+# Python caching
+__pycache__/
+*.pyc
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
