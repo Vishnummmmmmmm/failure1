@@ -7,20 +7,26 @@ export default function AuthCallback() {
   const router = useRouter()
 
   useEffect(() => {
+    let retryTimer: ReturnType<typeof setTimeout> | undefined
+
     // Supabase automatically picks up the token from the URL hash
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         router.replace('/')
       } else {
         // Retry once after short delay (token exchange in progress)
-        setTimeout(() => {
+        retryTimer = setTimeout(() => {
           supabase.auth.getSession().then(({ data: { session } }) => {
             router.replace(session ? '/' : '/login')
           })
         }, 1500)
       }
     })
-  }, [])
+
+    return () => {
+      if (retryTimer) clearTimeout(retryTimer)
+    }
+  }, [router])
 
   return (
     <div className="min-h-screen bg-[#050509] flex items-center justify-center">
